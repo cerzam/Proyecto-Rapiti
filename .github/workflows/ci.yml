@@ -1,0 +1,29 @@
+name: CI - Rapiti
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Verificar estructura del proyecto
+        run: |
+          echo "Repositorio clonado correctamente"
+          ls -la
+
+      - name: Validar Dockerfile
+        run: |
+          if [ -f Dockerfile ]; then
+            echo "Dockerfile encontrado"
+          else
+            echo "Dockerfile NO encontrado"
+            exit 1
+          fi
