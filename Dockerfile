@@ -1,23 +1,26 @@
-
-## 🐳 Dockerfile base (Node.js)
-
 # Imagen base
-FROM node:18-alpine
+FROM node:20-alpine
 
 # Directorio de trabajo dentro del contenedor
 WORKDIR /app
 
-# Copiar archivos
-COPY package*.json ./
+# Copiar archivos de dependencias del frontend
+COPY frontend/package*.json ./
 
 # Instalar dependencias
-RUN npm install
+RUN npm ci
 
-# Copiar el resto del proyecto
-COPY . .
+# Copiar el resto del proyecto frontend
+COPY frontend/ .
+
+# Build de produccion
+RUN npm run build
+
+# Instalar servidor estatico
+RUN npm install -g serve
 
 # Exponer el puerto
 EXPOSE 3000
 
-# Comando para iniciar la app
-CMD ["npm", "start"]
+# Comando para servir la app
+CMD ["serve", "-s", "dist", "-l", "3000"]

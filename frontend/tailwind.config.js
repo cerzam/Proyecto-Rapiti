@@ -9,15 +9,3 @@ export default {
   },
   plugins: [],
 }
-
-
-module.exports = {
-  theme: {
-    extend: {
-      // foco sea invisible
-      ringColor: {
-        DEFAULT: 'transparent',
-      }
-    },
-  },
-}
