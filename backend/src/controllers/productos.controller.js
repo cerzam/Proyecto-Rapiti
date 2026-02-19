@@ -1,20 +1,40 @@
-// Simulamos una base de datos por ahora
-const crearProducto = (req, res) => {
-    const { nombre, precio, tienda_id } = req.body;
+// Simulación de base de datos
+let productos = [];
 
-    // Aquí ira la lógica de guardar en PostgreSQL
-    console.log("Guardando en BD:", nombre);
+const crearProducto = async (req, res, next) => {
+    try {
+        const { nombre, precio, tienda_id } = req.body;
 
-    res.status(201).json({
-        success: true,
-        message: "Producto creado exitosamente",
-        data: {
-            id: Date.now(), // ID simulado
+        // 🔎 Validar existencia en BD
+        const existe = productos.find(
+            p => p.nombre === nombre && p.tienda_id === tienda_id
+        );
+
+        if (existe) {
+            return res.status(409).json({
+                success: false,
+                message: "El producto ya existe en esta tienda"
+            });
+        }
+
+        const nuevoProducto = {
+            id: Date.now(),
             nombre,
             precio,
             tienda_id
-        }
-    });
+        };
+
+        productos.push(nuevoProducto);
+
+        res.status(201).json({
+            success: true,
+            message: "Producto creado exitosamente",
+            data: nuevoProducto
+        });
+
+    } catch (error) {
+        next(error);
+    }
 };
 
 module.exports = { crearProducto };

@@ -1,17 +1,28 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
-const productosRoutes = require('./routes/productos.routes'); // Importamos la ruta que crearemos
+const productosRoutes = require('./routes/productos.routes');
 
-app.use(express.json()); // Para entender JSON
-app.use(cors()); // Para que el Frontend pueda conectarse
+app.use(express.json());
+app.use(cors());
 
-// Usamos las rutas
+// Rutas
 app.use('/api/productos', productosRoutes);
 
 // Ruta base de prueba
 app.get('/', (req, res) => {
     res.json({ message: "Backend de Rapiti funcionando" });
+});
+
+
+// 🔥 Middleware global de errores (DEBE IR AL FINAL)
+app.use((err, req, res, next) => {
+    console.error("🔥 Error capturado:", err.message);
+
+    res.status(500).json({
+        success: false,
+        message: "Error interno del servidor"
+    });
 });
 
 const PORT = 3000;
