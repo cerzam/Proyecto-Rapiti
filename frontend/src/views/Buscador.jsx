@@ -54,6 +54,15 @@ const Buscador = () => {
       setIndexSeleccionado((prev) => (prev > 0 ? prev - 1 : 0));
     } 
     else if (e.key === "Enter") {
+
+      // 🔥 CORRECCIÓN PARA QUE PASE EL TEST
+      if (indexSeleccionado >= 0) {
+        const seleccion = resultadosFiltrados[indexSeleccionado];
+        setBusqueda(seleccion);
+        setIndexSeleccionado(-1);
+        return;
+      }
+
       ejecutarBusqueda();
     }
   };
