@@ -2,15 +2,19 @@
 
 RapiTi es una aplicación web diseñada para permitir a los usuarios comparar precios de productos básicos en tiendas locales de la zona metropolitana de Puebla, ayudando a ahorrar tiempo y dinero.
 
+## Demo en Vivo
+
+**Prueba la aplicación desplegada:**
+
+https://rapiti-web.netlify.app
+
 ## Equipo de Desarrollo
 
-| Rol | Integrante |
-|-----|------------|
-| Team Leader (TL) | Héctor Ulises Cacho González |
-| Backend (BE) | Ciro Julián Cervantes Zamora |
-| Frontend (FE) | Dana Lizbeth Castañeda Sánchez |
-| QA Testing (QA) | Concepción Guadalupe Paniagua González |
-| DevOps (DO) | Oscar Yael Hernández Rodríguez |
+- Héctor Ulises Cacho González
+- Ciro Julián Cervantes Zamora
+- Dana Lizbeth Castañeda Sánchez
+- Concepción Guadalupe Paniagua González
+- Oscar Yael Hernández Rodríguez
 
 ## Tecnologías
 
