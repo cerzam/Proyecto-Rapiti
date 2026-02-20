@@ -1,64 +1,70 @@
-import { useState, useEffect, useRef } from 'react';  
+import { useState, useEffect, useRef } from "react";
 
 const Buscador = () => {
-  const inputRef = useRef(null); 
+  const inputRef = useRef(null);
+
   const [busqueda, setBusqueda] = useState("");
   const [indexSeleccionado, setIndexSeleccionado] = useState(-1);
   const [loading, setLoading] = useState(false);
   const [resultados, setResultados] = useState([]);
   const [error, setError] = useState(null);
 
-  const sugerenciasIniciales = [
-    "React", "Vite", "Tailwind CSS", "JavaScript", "Accesibilidad", "Componentes"
-  ];
-
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
 
-  const resultadosFiltrados = sugerenciasIniciales.filter((item) =>
-    item.toLowerCase().includes(busqueda.toLowerCase())
-  );
-
-  const ejecutarBusqueda = () => {
+  // 🔥 FUNCION CONSUMO API REAL
+  const ejecutarBusqueda = async () => {
     if (!busqueda.trim()) return;
 
-    setLoading(true);
-    setError(null);
-    setResultados([]);
+    if (!navigator.onLine) {
+      setError("No hay conexión a internet.");
+      return;
+    }
 
-    setTimeout(() => {
-      if (busqueda.toLowerCase() === "error") {
-        setError("Ocurrió un error en la búsqueda.");
-        setLoading(false);
-        return;
-      }
+    try {
+      setLoading(true);
+      setError(null);
+      setResultados([]);
 
-      const encontrados = sugerenciasIniciales.filter((item) =>
-        item.toLowerCase().includes(busqueda.toLowerCase())
+      // 🔥 Simulación de latencia
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      const response = await fetch(
+        "https://fakestoreapi.com/products"
       );
 
-      setResultados(encontrados);
-      setLoading(false);
+      if (!response.ok) {
+        throw new Error("Error en la respuesta del servidor");
+      }
 
-    }, 1500);
+      const data = await response.json();
+
+      const filtrados = data.filter((producto) =>
+        producto.title
+          .toLowerCase()
+          .includes(busqueda.toLowerCase())
+      );
+
+      setResultados(filtrados);
+    } catch (err) {
+      setError("Ocurrió un error al obtener los productos.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleKeyDown = (e) => {
     if (e.key === "ArrowDown") {
-      setIndexSeleccionado((prev) => 
-        prev < resultadosFiltrados.length - 1 ? prev + 1 : prev
+      setIndexSeleccionado((prev) =>
+        prev < resultados.length - 1 ? prev + 1 : prev
       );
-    } 
-    else if (e.key === "ArrowUp") {
+    } else if (e.key === "ArrowUp") {
       setIndexSeleccionado((prev) => (prev > 0 ? prev - 1 : 0));
-    } 
-    else if (e.key === "Enter") {
-
-      // 🔥 CORRECCIÓN PARA QUE PASE EL TEST
+    } else if (e.key === "Enter") {
       if (indexSeleccionado >= 0) {
-        const seleccion = resultadosFiltrados[indexSeleccionado];
-        setBusqueda(seleccion);
+        const seleccion = resultados[indexSeleccionado];
+        setBusqueda(seleccion.title);
         setIndexSeleccionado(-1);
         return;
       }
@@ -72,14 +78,14 @@ const Buscador = () => {
       <h2 className="text-4xl font-bold text-white mb-8 tracking-widest">
         BUSCADOR <span className="text-emerald-500">RAPITI</span>
       </h2>
-      
+
       <div className="w-full max-w-2xl relative">
-        <input 
-          ref={inputRef} 
-          type="text" 
+        <input
+          ref={inputRef}
+          type="text"
           disabled={loading}
           aria-disabled={loading}
-          placeholder="Escribe para filtrar (ej: React)..."
+          placeholder="Buscar producto..."
           value={busqueda}
           aria-label="Buscador de productos"
           onChange={(e) => {
@@ -92,43 +98,66 @@ const Buscador = () => {
             ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
         />
 
-        {busqueda !== "" && !loading && (
-          <div className="absolute w-full mt-2 bg-neutral-900 border border-neutral-800 rounded-xl overflow-hidden z-10 shadow-2xl">
-            {resultadosFiltrados.map((item, index) => (
+        {/* 🔥 LOADER ACCESIBLE */}
+        {loading && (
+          <div
+            aria-live="polite"
+            className="flex flex-col items-center mt-8"
+          >
+            <div className="animate-spin rounded-full h-12 w-12 border-4 border-emerald-500 border-t-transparent mb-4"></div>
+            <p className="text-white font-medium">
+              Cargando productos...
+            </p>
+          </div>
+        )}
+
+        {/* 🔥 ERROR ACCESIBLE */}
+        {!loading && error && (
+          <div
+            role="alert"
+            className="mt-6 text-center bg-red-900/30 p-6 rounded-xl border border-red-500"
+          >
+            <p className="text-red-400 text-lg mb-4">
+              ⚠ {error}
+            </p>
+            <button
+              onClick={ejecutarBusqueda}
+              className="bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-red-600 transition focus:ring-4 focus:ring-red-400"
+            >
+              Reintentar
+            </button>
+          </div>
+        )}
+
+        {/* RESULTADOS */}
+        {!loading && !error && resultados.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+            {resultados.map((producto, index) => (
               <div
-                key={index}
-                role="option"
-                aria-selected={index === indexSeleccionado}
+                key={producto.id}
                 tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    setBusqueda(item);
-                    setIndexSeleccionado(-1);
-                  }
-                }}
-                onClick={() => {
-                  setBusqueda(item);
-                  setIndexSeleccionado(-1);
-                }}
-                className={`px-6 py-3 text-white cursor-pointer transition-colors border-b border-neutral-800 last:border-none
+                className={`bg-neutral-900 border p-6 rounded-2xl cursor-pointer
                   focus:ring-4 focus:ring-emerald-500 outline-none
-                  ${index === indexSeleccionado ? "bg-emerald-500/20 text-emerald-400" : "hover:bg-emerald-500/10"}`}
+                  hover:border-emerald-500/50 transition-all
+                  ${
+                    index === indexSeleccionado
+                      ? "border-emerald-500"
+                      : "border-neutral-800"
+                  }`}
               >
-                {item}
+                <img
+                  src={producto.image}
+                  alt={producto.title}
+                  className="h-32 mx-auto object-contain mb-4"
+                />
+                <h3 className="text-xl font-semibold text-white">
+                  {producto.title}
+                </h3>
+                <p className="text-emerald-400 mt-2">
+                  ${producto.price}
+                </p>
               </div>
             ))}
-          </div>
-        )}
-
-        {loading && (
-          <div aria-busy="true" className="flex justify-center mt-8">
-            <div className="animate-spin rounded-full h-12 w-12 border-4 border-emerald-500 border-t-transparent"></div>
-          </div>
-        )}
-
-        {!loading && error && (
-          <div role="alert" className="text-red-500 mt-6 text-center">
-            {error}
           </div>
         )}
 
@@ -137,38 +166,6 @@ const Buscador = () => {
             No se encontraron resultados.
           </div>
         )}
-
-        {!loading && !error && resultados.length > 0 && (
-          <div aria-live="polite" className="text-gray-400 mt-6 text-center">
-            {resultados.length} resultados encontrados
-          </div>
-        )}
-
-        {!loading && resultados.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-            {resultados.map((item, index) => (
-              <div
-                key={index}
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    alert(`Abriendo detalle de ${item}`);
-                  }
-                }}
-                onClick={() => alert(`Abriendo detalle de ${item}`)}
-                className="bg-neutral-900 border border-neutral-800 p-6 rounded-2xl cursor-pointer
-                           focus:ring-4 focus:ring-emerald-500 outline-none
-                           hover:border-emerald-500/50 transition-all"
-              >
-                <h3 className="text-xl font-semibold text-white">{item}</h3>
-                <p className="text-gray-400 mt-2">
-                  Este es el detalle del producto {item}.
-                </p>
-              </div>
-            ))}
-          </div>
-        )}
-
       </div>
     </div>
   );
