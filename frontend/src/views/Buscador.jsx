@@ -29,16 +29,17 @@ const Buscador = () => {
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
       const response = await fetch(
-        "https://fakestoreapi.com/products"
+        `${import.meta.env.VITE_API_URL}/productos`
       );
 
       if (!response.ok) {
         throw new Error("Error en la respuesta del servidor");
       }
 
-      const data = await response.json();
+      const result = await response.json();
+      const productos = result.data || result;
 
-      const filtrados = data.filter((producto) =>
+      const filtrados = productos.filter((producto) =>
         producto.title
           .toLowerCase()
           .includes(busqueda.toLowerCase())
