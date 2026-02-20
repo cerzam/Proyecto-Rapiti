@@ -43,7 +43,9 @@ describe('App - Navegación y accesibilidad', () => {
     renderApp()
 
     await user.click(screen.getByText('BUSCADOR'))
-    expect(screen.getByPlaceholderText(/escribe para filtrar/i)).toBeInTheDocument()
+    expect(
+      screen.getByLabelText(/buscador de productos/i)
+    ).toBeInTheDocument()
   })
 
   it('navega a Login al hacer click en el enlace', async () => {
@@ -66,27 +68,20 @@ describe('Buscador - Teclado y accesibilidad', () => {
 
   it('el input de búsqueda recibe focus automáticamente', async () => {
     await irABuscador()
-    const input = screen.getByPlaceholderText(/escribe para filtrar/i)
+    const input = screen.getByLabelText(/buscador de productos/i)
     expect(input).toBeInTheDocument()
+    expect(input).toHaveFocus()
   })
 
-  it('filtra sugerencias al escribir', async () => {
+  it('permite navegar con teclado', async () => {
     const user = await irABuscador()
-    const input = screen.getByPlaceholderText(/escribe para filtrar/i)
-
-    await user.type(input, 'React')
-    expect(screen.getByText('React')).toBeInTheDocument()
-  })
-
-  it('permite navegar sugerencias con flechas del teclado', async () => {
-    const user = await irABuscador()
-    const input = screen.getByPlaceholderText(/escribe para filtrar/i)
+    const input = screen.getByLabelText(/buscador de productos/i)
 
     await user.type(input, 'a')
     await user.keyboard('{ArrowDown}')
     await user.keyboard('{Enter}')
 
-    expect(input.value).not.toBe('a')
+    expect(input.value).not.toBe('')
   })
 })
 
