@@ -1,20 +1,35 @@
 const express = require('express');
 const cors = require('cors');
+
+// 1. Importar nuevos middlewares
+const { delayMiddleware } = require('./middlewares/delay.middleware');
+const { errorHandler } = require('./middlewares/errorHandler.middleware');
+
+// 2. Importar rutas
+const productosRoutes = require('./routes/productos.routes'); 
+const testRoutes = require('./routes/test.routes'); // Error 500
+
 const app = express();
-const productosRoutes = require('./routes/productos.routes'); // Importamos la ruta que crearemos
 
-app.use(express.json()); // Para entender JSON
-app.use(cors()); // Para que el Frontend pueda conectarse
+app.use(express.json()); 
+app.use(cors()); 
 
-// Usamos las rutas
+// 3. LATENCIA GLOBAL (Requisito de la semana)
+app.use(delayMiddleware);
+
+// 4. ZONA DE RUTAS
 app.use('/api/productos', productosRoutes);
+app.use('/api/test', testRoutes); // GET /api/test/test-error
 
 // Ruta base de prueba
 app.get('/', (req, res) => {
     res.json({ message: "Backend de Rapiti funcionando" });
 });
 
-const PORT = 3000;
+// 5. MIDDLEWARE GLOBAL DE ERRORES
+app.use(errorHandler);
+
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
