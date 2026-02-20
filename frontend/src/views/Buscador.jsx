@@ -13,7 +13,6 @@ const Buscador = () => {
     inputRef.current?.focus();
   }, []);
 
-  // 🔥 FUNCION CONSUMO API REAL
   const ejecutarBusqueda = async () => {
     if (!busqueda.trim()) return;
 
@@ -27,7 +26,6 @@ const Buscador = () => {
       setError(null);
       setResultados([]);
 
-      // 🔥 Simulación de latencia
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
       const response = await fetch(
@@ -47,7 +45,7 @@ const Buscador = () => {
       );
 
       setResultados(filtrados);
-    } catch (err) {
+    } catch {
       setError("Ocurrió un error al obtener los productos.");
     } finally {
       setLoading(false);
@@ -98,7 +96,6 @@ const Buscador = () => {
             ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
         />
 
-        {/* 🔥 LOADER ACCESIBLE */}
         {loading && (
           <div
             aria-live="polite"
@@ -111,7 +108,6 @@ const Buscador = () => {
           </div>
         )}
 
-        {/* 🔥 ERROR ACCESIBLE */}
         {!loading && error && (
           <div
             role="alert"
@@ -129,7 +125,6 @@ const Buscador = () => {
           </div>
         )}
 
-        {/* RESULTADOS */}
         {!loading && !error && resultados.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
             {resultados.map((producto, index) => (
