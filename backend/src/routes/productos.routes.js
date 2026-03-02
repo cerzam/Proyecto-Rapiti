@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const { body } = require('express-validator');
 const { validateRequest } = require('../middlewares/validator.middleware');
+const { delayMiddleware } = require('../middlewares/delay.middleware');
 // AQUÍ IMPORTAMOS EL CONTROLADOR
 const { crearProducto } = require('../controllers/productos.controller');
 
