@@ -10,7 +10,7 @@ const Login = () => {
 
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-112px)] px-4">
-      <div className="bg-neutral-900/50 border border-neutral-800 p-10 rounded-3xl backdrop-blur-md w-full max-w-md shadow-2xl">
+      <div className="bg-neutral-900/50 border border-neutral-800 p-10 rounded-3xl backdrop-blur-md w-full max-w-md shadow-2xl animate-scale-in">
         <h2 className="text-3xl font-bold text-white mb-8 text-center tracking-tight">
           INICIAR <span className="text-emerald-500">SESIÓN</span>
         </h2>

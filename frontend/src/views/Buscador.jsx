@@ -74,7 +74,7 @@ const Buscador = () => {
 
   return (
     <div className="flex flex-col items-center pt-20 px-4 min-h-[calc(100vh-112px)]">
-      <h2 className="text-4xl font-bold text-white mb-8 tracking-widest">
+      <h2 className="text-4xl font-bold text-white mb-8 tracking-widest animate-fade-in-up">
         BUSCADOR <span className="text-emerald-500">RAPITI</span>
       </h2>
 
@@ -112,7 +112,7 @@ const Buscador = () => {
         {!loading && error && (
           <div
             role="alert"
-            className="mt-6 text-center bg-red-900/30 p-6 rounded-xl border border-red-500"
+            className="mt-6 text-center bg-red-900/30 p-6 rounded-xl border border-red-500 animate-scale-in"
           >
             <p className="text-red-400 text-lg mb-4">
               ⚠ {error}
@@ -134,12 +134,15 @@ const Buscador = () => {
                 tabIndex={0}
                 className={`bg-neutral-900 border p-6 rounded-2xl cursor-pointer
                   focus:ring-4 focus:ring-emerald-500 outline-none
-                  hover:border-emerald-500/50 transition-all
+                  hover:border-emerald-500/50 hover:-translate-y-1
+                  hover:shadow-[0_4px_24px_rgba(16,185,129,0.12)]
+                  transition-all duration-300 animate-fade-in-up
                   ${
                     index === indexSeleccionado
                       ? "border-emerald-500"
                       : "border-neutral-800"
                   }`}
+                style={{ animationDelay: `${index * 0.07}s` }}
               >
                 <img
                   src={producto.image}
@@ -158,7 +161,7 @@ const Buscador = () => {
         )}
 
         {!loading && !error && resultados.length === 0 && busqueda !== "" && (
-          <div className="text-gray-500 mt-6 text-center">
+          <div className="text-gray-500 mt-6 text-center animate-fade-in">
             No se encontraron resultados.
           </div>
         )}
