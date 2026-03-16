@@ -1,3 +1,6 @@
+require('dotenv').config();
+
+const authRoutes = require('./routes/auth.routes');
 const express = require('express');
 const cors = require('cors');
 
@@ -14,10 +17,11 @@ const app = express();
 app.use(express.json()); 
 app.use(cors()); 
 
-// 3. LATENCIA GLOBAL (Requisito de la semana)
+// 3. LATENCIA GLOBAL
 app.use(delayMiddleware);
 
 // 4. ZONA DE RUTAS
+app.use('/api/auth', authRoutes);      // ← AQUÍ agregas tu login
 app.use('/api/productos', productosRoutes);
 app.use('/api/test', testRoutes); // GET /api/test/test-error
 
