@@ -90,7 +90,7 @@ export default function Login() {
       <div className="max-w-md w-full bg-white rounded-lg shadow-md p-8">
         
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
-          Acceso para Tiendas
+          INICIAR SESIÓN
         </h2>
 
         {/* ERROR GLOBAL SEGURO */}
@@ -109,7 +109,7 @@ export default function Login() {
           {/* CAMPO DE CORREO */}
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-              Correo Electrónico
+              Email
             </label>
             <input
               ref={emailRef}
@@ -125,7 +125,7 @@ export default function Login() {
                 ${errors.email 
                   ? 'border-red-500 focus:ring-red-500 focus:border-red-500' 
                   : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'}`}
-              placeholder="ejemplo@correo.com"
+              placeholder="tu@correo.com"
             />
             {/* Mensaje de error específico del campo */}
             {errors.email && (
@@ -180,7 +180,7 @@ export default function Login() {
                 Iniciando sesión...
               </>
             ) : (
-              'Ingresar al panel'
+              'Entrar'
             )}
           </button>
         </form>
