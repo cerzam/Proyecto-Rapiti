@@ -79,7 +79,7 @@ export default function Login() {
         setErrors({ ...newErrors, global: 'Credenciales inválidas.' });
         // Importante: No limpiamos el password (Requisito TL)
       }
-    } catch (error) {
+    } catch {
       setStatus('error');
       setErrors({ ...newErrors, global: 'Ocurrió un error de red. Intenta más tarde.' });
     }
