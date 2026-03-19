@@ -1,32 +1,35 @@
+require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
 
-// 1. Importar nuevos middlewares
+// Middlewares
 const { delayMiddleware } = require('./middlewares/delay.middleware');
 const { errorHandler } = require('./middlewares/errorHandler.middleware');
 
-// 2. Importar rutas
+// Rutas
+const authRoutes = require('./routes/auth.routes');     
 const productosRoutes = require('./routes/productos.routes'); 
-const testRoutes = require('./routes/test.routes'); // Error 500
+const testRoutes = require('./routes/test.routes'); 
 
 const app = express();
 
+// Middleware global
 app.use(express.json()); 
 app.use(cors()); 
-
-// 3. LATENCIA GLOBAL (Requisito de la semana)
 app.use(delayMiddleware);
 
-// 4. ZONA DE RUTAS
+// Rutas
+app.use('/api/auth', authRoutes);        // Login / registro
 app.use('/api/productos', productosRoutes);
-app.use('/api/test', testRoutes); // GET /api/test/test-error
+app.use('/api/test', testRoutes);        // GET /api/test/admin-test y /test-error
 
-// Ruta base de prueba
+// Ruta base
 app.get('/', (req, res) => {
     res.json({ message: "Backend de Rapiti funcionando" });
 });
 
-// 5. MIDDLEWARE GLOBAL DE ERRORES
+// Middleware global de errores
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
