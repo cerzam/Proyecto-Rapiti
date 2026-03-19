@@ -64,21 +64,24 @@ export default function Login() {
     }
 
     try {
-      // Simulación de petición al Backend (espera 1.5s)
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
 
-      // Simulación de respuesta del servidor
-      if (email === 'tienda@rapiti.com' && password === '12345678') {
-        setStatus('success');
-        // El TL indicó que el Payload trae el rol. Aquí guardaríamos el JWT real.
-        localStorage.setItem('token', 'simulacion-jwt-tienda'); 
-        alert('¡Login exitoso! Bienvenido a tu panel de Tienda.');
-      } else {
+      const data = await res.json();
+
+      if (!res.ok) {
         setStatus('error');
-        // Mensaje genérico y seguro (Requisito TL)
-        setErrors({ ...newErrors, global: 'Credenciales inválidas.' });
-        // Importante: No limpiamos el password (Requisito TL)
+        setErrors({ ...newErrors, global: data.message || 'Credenciales inválidas.' });
+        return;
       }
+
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('rol', data.user.rol);
+      setStatus('success');
+      alert(`¡Login exitoso! Bienvenido, ${data.user.rol}.`);
     } catch {
       setStatus('error');
       setErrors({ ...newErrors, global: 'Ocurrió un error de red. Intenta más tarde.' });
