@@ -15,5 +15,10 @@
   "license": "ISC",
   "devDependencies": {
     "concurrently": "^9.2.1"
+  },
+  "dependencies": {
+    "connect-redis": "^9.0.0",
+    "express-session": "^1.19.0",
+    "redis": "^5.11.0"
   }
 }
