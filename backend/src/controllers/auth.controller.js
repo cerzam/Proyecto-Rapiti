@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { sessions } = require('../config/sessions');
 
 // Usuario de prueba (MVP)
 const user = {
@@ -31,6 +32,12 @@ const login = async (req, res, next) => {
       process.env.JWT_SECRET || "secret_key_mvp",
       { expiresIn: "8h" }
     );
+
+    // GUARDAR SESIÓN (MULTISESIÓN)
+    sessions.push({
+      userId: user.id,
+      token
+    });
 
     res.json({
       token,
