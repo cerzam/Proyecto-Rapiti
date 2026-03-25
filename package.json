@@ -1,0 +1,24 @@
+{
+  "name": "proyecto-rapiti",
+  "version": "1.0.0",
+  "description": "RapiTi es una aplicación web diseñada para permitir a los usuarios comparar precios de productos básicos en tiendas locales de la zona metropolitana de Puebla, ayudando a ahorrar tiempo y dinero.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  },
+  "dependencies": {
+    "connect-redis": "^9.0.0",
+    "express-session": "^1.19.0",
+    "redis": "^5.11.0"
+  }
+}
