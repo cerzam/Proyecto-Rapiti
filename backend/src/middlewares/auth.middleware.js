@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { sessions } = require('../config/sessions');
+const { sessions, cleanExpiredSessions } = require('../config/sessions');
 
 const verificarToken = (req, res, next) => {
   try {
@@ -11,6 +11,9 @@ const verificarToken = (req, res, next) => {
 
     // Verificar JWT
     const decoded = jwt.verify(token, process.env.JWT_SECRET || "secret_key_mvp");
+
+    // Limpiar sesiones expiradas antes de validar
+    cleanExpiredSessions();
 
     // 🔥 VALIDAR SESIÓN (MULTISESIÓN)
     const sessionExists = sessions.find(s => s.token === token);

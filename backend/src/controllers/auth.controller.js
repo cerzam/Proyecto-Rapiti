@@ -1,6 +1,8 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { sessions } = require('../config/sessions');
+const { sessions, cleanExpiredSessions } = require('../config/sessions');
+
+const MAX_SESSIONS_PER_USER = 5;
 
 // Usuario de prueba (MVP)
 const user = {
@@ -33,10 +35,22 @@ const login = async (req, res, next) => {
       { expiresIn: "8h" }
     );
 
+    // Limpiar expiradas antes de contar
+    cleanExpiredSessions();
+
+    // Si el usuario ya tiene el máximo de sesiones, eliminar la más antigua
+    const userSessions = sessions.filter(s => s.userId === user.id);
+    if (userSessions.length >= MAX_SESSIONS_PER_USER) {
+      const oldest = userSessions[0];
+      const idx = sessions.indexOf(oldest);
+      sessions.splice(idx, 1);
+    }
+
     // GUARDAR SESIÓN (MULTISESIÓN)
     sessions.push({
       userId: user.id,
-      token
+      token,
+      expiresAt: Date.now() + 8 * 60 * 60 * 1000 // 8h en ms
     });
 
     res.json({
