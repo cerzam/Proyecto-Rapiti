@@ -36,7 +36,8 @@ const login = async (req, res, next) => {
     // GUARDAR SESIÓN (MULTISESIÓN)
     sessions.push({
       userId: user.id,
-      token
+      token,
+      expiresAt: Date.now() + 8 * 60 * 60 * 1000 // 8h en ms
     });
 
     res.json({
