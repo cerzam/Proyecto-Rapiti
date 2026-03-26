@@ -12,6 +12,31 @@ function App() {
   // Estado para mostrar el mensaje de sesión expirada
   const [showExpiredModal, setShowExpiredModal] = useState(false);
 
+  // Reconexión: verificar si la sesión sigue válida al volver a estar online
+  useEffect(() => {
+    const handleOnline = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/verify`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (!res.ok) {
+          localStorage.removeItem('token');
+          setIsAuth(false);
+          setShowExpiredModal(true);
+        }
+      } catch {
+        // Sin conexión aún, no hacer nada
+      }
+    };
+
+    window.addEventListener('online', handleOnline);
+    return () => window.removeEventListener('online', handleOnline);
+  }, []);
+
   // Checador de pestañas (Storage Event)
   useEffect(() => {
     const handleStorageChange = (e) => {

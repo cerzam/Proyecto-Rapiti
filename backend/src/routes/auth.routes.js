@@ -28,6 +28,11 @@ router.post(
   login
 );
 
+// VERIFICAR SESIÓN (para reconexión)
+router.get('/verify', verificarToken, (req, res) => {
+  res.json({ valid: true });
+});
+
 // 🔥 LOGOUT (INVALIDAR SESIÓN)
 router.post('/logout', verificarToken, (req, res) => {
   const authHeader = req.headers['authorization'];
