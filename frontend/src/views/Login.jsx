@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 
-export default function Login() {
+export default function Login({ setIsAuth }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [status, setStatus] = useState('idle'); // idle | loading | success | error
@@ -20,8 +20,7 @@ export default function Login() {
     let isValid = true;
     let newErrors = { global: '', email: '', password: '' };
 
-    // VALIDACIONES DEL CORREO (Reglas del TL)
-    
+    // VALIDACIONES DEL CORREO 
     if (!email) {
       newErrors.email = 'El correo electrónico es obligatorio.';
       isValid = false;
@@ -36,8 +35,7 @@ export default function Login() {
       isValid = false;
     }
 
-    // VALIDACIONES DE LA CONTRASEÑA (Reglas del TL)
-
+    // VALIDACIONES DE LA CONTRASEÑA 
     if (!password) {
       newErrors.password = 'La contraseña es obligatoria.';
       isValid = false;
@@ -78,9 +76,14 @@ export default function Login() {
         return;
       }
 
+      // Guardamos la sesión real
       localStorage.setItem('token', data.token);
       localStorage.setItem('rol', data.user.rol);
       setStatus('success');
+      
+      // pruebas
+      setIsAuth(true);
+      
       alert(`¡Login exitoso! Bienvenido, ${data.user.rol}.`);
     } catch {
       setStatus('error');
