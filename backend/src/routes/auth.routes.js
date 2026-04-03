@@ -1,5 +1,6 @@
 const { Router } = require('express');
 const { body } = require('express-validator');
+const { recoverLimiter } = require('../middlewares/rateLimit.middleware');
 
 const { validateRequest } = require('../middlewares/validator.middleware');
 const { login } = require('../controllers/auth.controller');

@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
 
 // Middlewares
 const { delayMiddleware } = require('./middlewares/delay.middleware');
@@ -13,6 +14,10 @@ const productosRoutes = require('./routes/productos.routes');
 const testRoutes = require('./routes/test.routes'); 
 
 const app = express();
+
+// Uso helmet al inicio para proteción de todas las rutas
+app.use(helmet());
+app.set('trust proxy', 1); // <--- Para poder detectar IPs reales tras un proxy
 
 // Middleware global
 app.use(express.json()); 
