@@ -1,9 +1,11 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 
 export default function ResetPassword() {
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token') || '';
+
+  const tokenInvalido = !token;
 
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
@@ -12,13 +14,6 @@ export default function ResetPassword() {
   const [globalMsg, setGlobalMsg] = useState('');
   const passwordRef = useRef(null);
   const confirmRef = useRef(null);
-
-  useEffect(() => {
-    if (!token) {
-      setStatus('error');
-      setGlobalMsg('El enlace no es válido o ya expiró.');
-    }
-  }, [token]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -91,7 +86,7 @@ export default function ResetPassword() {
         </p>
 
         <div aria-live="polite" className="mb-4">
-          {globalMsg && (
+          {(tokenInvalido || globalMsg) && (
             <div
               role="alert"
               className={`border p-4 rounded-xl text-sm ${
@@ -100,12 +95,12 @@ export default function ResetPassword() {
                   : 'bg-red-900/30 border-red-500 text-red-400'
               }`}
             >
-              {globalMsg}
+              {tokenInvalido ? 'El enlace no es válido o ya expiró.' : globalMsg}
             </div>
           )}
         </div>
 
-        {status !== 'success' && status !== 'error' || status === 'idle' ? (
+        {!tokenInvalido && status !== 'success' && status !== 'error' ? (
           <form onSubmit={handleSubmit} className="space-y-6" noValidate>
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-400 mb-2">
@@ -188,7 +183,7 @@ export default function ResetPassword() {
           </div>
         )}
 
-        {status === 'error' && (
+        {(tokenInvalido || status === 'error') && (
           <div className="mt-6 text-center">
             <Link
               to="/forgot-password"
