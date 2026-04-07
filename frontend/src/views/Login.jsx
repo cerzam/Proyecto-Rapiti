@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function Login({ setIsAuth }) {
   const [email, setEmail] = useState('');
@@ -183,6 +184,15 @@ export default function Login({ setIsAuth }) {
             )}
           </button>
         </form>
+
+        <div className="mt-6 text-center">
+          <Link
+            to="/forgot-password"
+            className="text-sm text-gray-400 hover:text-emerald-400 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded"
+          >
+            ¿Olvidaste tu contraseña?
+          </Link>
+        </div>
 
       </div>
     </div>
