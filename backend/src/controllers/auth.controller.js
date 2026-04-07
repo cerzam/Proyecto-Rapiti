@@ -1,6 +1,8 @@
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const { sessions, cleanExpiredSessions } = require('../config/sessions');
+const { recoveryTokens, cleanExpiredRecoveryTokens, EXPIRATION_MS } = require('../config/recovery-tokens');
 
 const MAX_SESSIONS_PER_USER = 5;
 
@@ -66,4 +68,70 @@ const login = async (req, res, next) => {
   }
 };
 
-module.exports = { login };
+// FORGOT PASSWORD
+const forgotPassword = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+
+    // Mensaje siempre igual — no revela si el email existe
+    const mensaje = "Si ese correo está registrado, recibirás las instrucciones.";
+
+    if (email !== user.email) {
+      return res.status(200).json({ message: mensaje });
+    }
+
+    cleanExpiredRecoveryTokens();
+
+    // Eliminar tokens previos del mismo usuario
+    const idx = recoveryTokens.findIndex(t => t.userId === user.id);
+    if (idx !== -1) recoveryTokens.splice(idx, 1);
+
+    // Generar token criptográficamente seguro
+    const token = crypto.randomBytes(32).toString('hex');
+
+    recoveryTokens.push({
+      userId: user.id,
+      token,
+      expiresAt: Date.now() + EXPIRATION_MS
+    });
+
+    // En producción real se enviaría por email.
+    // En desarrollo devolvemos el token para poder demostrar el flujo.
+    return res.status(200).json({
+      message: mensaje,
+      _devToken: token // solo en desarrollo
+    });
+
+  } catch (error) {
+    next(error);
+  }
+};
+
+// RESET PASSWORD
+const resetPassword = async (req, res, next) => {
+  try {
+    const { token, password } = req.body;
+
+    cleanExpiredRecoveryTokens();
+
+    const entry = recoveryTokens.find(t => t.token === token);
+
+    if (!entry) {
+      return res.status(400).json({ message: "El enlace no es válido o ya expiró." });
+    }
+
+    // Hashear la nueva contraseña y actualizar el usuario en memoria
+    user.password = await bcrypt.hash(password, 10);
+
+    // Invalidar el token — uso único
+    const idx = recoveryTokens.indexOf(entry);
+    recoveryTokens.splice(idx, 1);
+
+    return res.status(200).json({ message: "Contraseña actualizada correctamente." });
+
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { login, forgotPassword, resetPassword };
