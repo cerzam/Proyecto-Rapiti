@@ -3,6 +3,9 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
+const morgan = require('morgan');
+const fs = require('fs');
+const path = require('path');
 
 // Middlewares
 const { delayMiddleware } = require('./middlewares/delay.middleware');
@@ -14,6 +17,17 @@ const productosRoutes = require('./routes/productos.routes');
 const testRoutes = require('./routes/test.routes'); 
 
 const app = express();
+
+// --- CONFIGURACIÓN DE LOGS Y SEGURIDAD ---
+
+// Configuración según el entorno
+if (process.env.NODE_ENV === 'production') {
+    // Formato 'combined' para producción (estándar Apache/Nginx)
+    app.use(morgan('combined'));
+} else {
+    // Formato 'dev' para desarrollo (con colores y más simple)
+    app.use(morgan('dev'));
+}
 
 // Uso helmet al inicio para proteción de todas las rutas
 app.use(helmet());
