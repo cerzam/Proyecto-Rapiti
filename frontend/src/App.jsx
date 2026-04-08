@@ -5,6 +5,8 @@ import Navbar from './components/Navbar';
 import Home from './views/Home';
 import Buscador from './views/Buscador';
 import Login from './views/Login';
+import ForgotPassword from './views/ForgotPassword';
+import ResetPassword from './views/ResetPassword';
 
 function App() {
   // Estado para saber si el usuario tiene sesión
@@ -75,6 +77,8 @@ function App() {
           <Route path="/buscador" element={<Buscador />} />
           {/* Le pasamos setIsAuth al Login para que pueda avisar cuando entre */}
           <Route path="/login" element={<Login setIsAuth={setIsAuth} />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
         </Routes>
       </main>
 
