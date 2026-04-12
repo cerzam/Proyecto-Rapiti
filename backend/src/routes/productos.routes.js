@@ -2,7 +2,8 @@ const { Router } = require('express');
 const { body } = require('express-validator');
 const { validateRequest } = require('../middlewares/validator.middleware');
 const { delayMiddleware } = require('../middlewares/delay.middleware');
-// AQUÍ IMPORTAMOS EL CONTROLADOR
+const { verificarToken } = require('../middlewares/auth.middleware');
+const { authorizeRole } = require('../middlewares/role.middleware');
 const { crearProducto } = require('../controllers/productos.controller');
 
 const router = Router();
@@ -54,7 +55,8 @@ const productosDemo = [
     }
 ];
 
-router.get('/', (req, res) => {
+// GET /api/productos — solo usuarios autenticados
+router.get('/', verificarToken, (req, res) => {
     res.json({
         success: true,
         count: productosDemo.length,
@@ -62,16 +64,17 @@ router.get('/', (req, res) => {
     });
 });
 
-// POST /api/productos
-router.post('/', 
+// POST /api/productos — solo rol "tienda"
+router.post('/',
+    verificarToken,
+    authorizeRole('tienda'),
     [
-        // Reglas de validación (Middleware 1)
         body('nombre').notEmpty().withMessage('El nombre es obligatorio'),
         body('precio').isFloat({ min: 0.01 }).withMessage('El precio debe ser mayor a 0'),
         body('tienda_id').isInt().withMessage('ID de tienda inválido')
     ],
-    validateRequest, // Middleware 2: Revisa si pasaron las reglas
-    crearProducto    // Controlador: Si todo pasó, ejecuta tu lógica
+    validateRequest,
+    crearProducto
 );
 
 module.exports = router;

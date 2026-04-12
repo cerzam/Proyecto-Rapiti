@@ -1,5 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
-// NUEVO: Importamos useState y useEffect de React
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Home from './views/Home';
@@ -74,7 +73,10 @@ function App() {
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/buscador" element={<Buscador />} />
+          <Route
+            path="/buscador"
+            element={isAuth ? <Buscador /> : <Navigate to="/login" replace />}
+          />
           {/* Le pasamos setIsAuth al Login para que pueda avisar cuando entre */}
           <Route path="/login" element={<Login setIsAuth={setIsAuth} />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />

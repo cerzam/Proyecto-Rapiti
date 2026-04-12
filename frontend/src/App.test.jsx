@@ -118,6 +118,8 @@ describe('Sesión - Multipestaña, logout y reconexión', () => {
 });
 
 describe('App - Navegación y accesibilidad', () => {
+  beforeEach(() => { localStorage.clear() })
+
   it('renderiza el navbar con los enlaces de navegación', () => {
     renderApp()
     expect(screen.getByRole('navigation')).toBeInTheDocument()
@@ -144,6 +146,7 @@ describe('App - Navegación y accesibilidad', () => {
   })
 
   it('navega a Buscador al hacer click en el enlace', async () => {
+    localStorage.setItem('token', 'fake-token')
     const user = userEvent.setup()
     renderApp()
 
@@ -164,7 +167,10 @@ describe('App - Navegación y accesibilidad', () => {
 })
 
 describe('Buscador - Teclado y accesibilidad', () => {
+  beforeEach(() => { localStorage.clear() })
+
   async function irABuscador() {
+    localStorage.setItem('token', 'fake-token')
     const user = userEvent.setup()
     renderApp()
     await user.click(screen.getByRole('link', { name: 'BUSCADOR' }))
@@ -191,6 +197,8 @@ describe('Buscador - Teclado y accesibilidad', () => {
 })
 
 describe('Login - Formulario y accesibilidad', () => {
+  beforeEach(() => { localStorage.clear() })
+
   async function irALogin() {
     const user = userEvent.setup()
     renderApp()
