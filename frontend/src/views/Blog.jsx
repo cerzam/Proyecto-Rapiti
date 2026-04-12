@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
+import { useAuth } from '../context/useAuth';
 
 const postsMock = [
   {
@@ -25,7 +26,8 @@ const postsMock = [
   },
 ];
 
-export default function Blog({ isAuth }) {
+export default function Blog() {
+  const { isAuth } = useAuth();
   const [posts, setPosts] = useState(postsMock);
 
   const handleEliminar = (id) => {
