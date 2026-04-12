@@ -17,6 +17,8 @@ const user = {
 
 const login = async (req, res, next) => {
   try {
+        console.log("BODY:", req.body); // 👈 AQUÍ
+
     const { email, password } = req.body;
 
     // Validar email
