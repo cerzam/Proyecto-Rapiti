@@ -24,6 +24,13 @@ const Navbar = ({ isAuth, handleLogout }) => {
           BUSCADOR
         </NavLink>
 
+        <NavLink
+          to="/blog"
+          className={({ isActive }) => `${linkBase} ${isActive ? activeClass : inactiveClass}`}
+        >
+          BLOG
+        </NavLink>
+
         {/* NUEVO: Lógica Condicional para el Login/Logout */}
         {isAuth ? (
           <button

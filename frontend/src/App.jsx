@@ -6,6 +6,8 @@ import Buscador from './views/Buscador';
 import Login from './views/Login';
 import ForgotPassword from './views/ForgotPassword';
 import ResetPassword from './views/ResetPassword';
+import Blog from './views/Blog';
+import CreatePost from './views/CreatePost';
 
 function App() {
   // Estado para saber si el usuario tiene sesión
@@ -78,6 +80,8 @@ function App() {
             element={isAuth ? <Buscador /> : <Navigate to="/login" replace />}
           />
           {/* Le pasamos setIsAuth al Login para que pueda avisar cuando entre */}
+          <Route path="/blog" element={<Blog isAuth={isAuth} />} />
+          <Route path="/blog/crear" element={isAuth ? <CreatePost /> : <Navigate to="/login" replace />} />
           <Route path="/login" element={<Login setIsAuth={setIsAuth} />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
