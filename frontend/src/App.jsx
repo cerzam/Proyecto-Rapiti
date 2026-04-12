@@ -8,6 +8,7 @@ import ForgotPassword from './views/ForgotPassword';
 import ResetPassword from './views/ResetPassword';
 import Blog from './views/Blog';
 import CreatePost from './views/CreatePost';
+import EditPost from './views/EditPost';
 import AdminPanel from './views/AdminPanel';
 import AdminProducts from './views/AdminProducts';
 import ProductForm from './views/ProductForm';
@@ -87,6 +88,7 @@ function App() {
           {/* Le pasamos setIsAuth al Login para que pueda avisar cuando entre */}
           <Route path="/blog" element={<Blog isAuth={isAuth} />} />
           <Route path="/blog/crear" element={isAuth ? <CreatePost /> : <Navigate to="/login" replace />} />
+          <Route path="/blog/editar/:id" element={isAuth ? <EditPost /> : <Navigate to="/login" replace />} />
           <Route path="/login" element={<Login setIsAuth={setIsAuth} />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
