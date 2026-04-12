@@ -8,10 +8,15 @@ import ForgotPassword from './views/ForgotPassword';
 import ResetPassword from './views/ResetPassword';
 import Blog from './views/Blog';
 import CreatePost from './views/CreatePost';
+import AdminPanel from './views/AdminPanel';
+import AdminProducts from './views/AdminProducts';
+import ProductForm from './views/ProductForm';
 
 function App() {
   // Estado para saber si el usuario tiene sesión
   const [isAuth, setIsAuth] = useState(!!localStorage.getItem('token'));
+  const rol = localStorage.getItem('rol');
+  const isAdmin = isAuth && (rol === 'tienda' || rol === 'admin');
   // Estado para mostrar el mensaje de sesión expirada
   const [showExpiredModal, setShowExpiredModal] = useState(false);
 
@@ -70,7 +75,7 @@ function App() {
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
       {/* Pasamos los props al Navbar */}
-      <Navbar isAuth={isAuth} handleLogout={handleLogout} />
+      <Navbar isAuth={isAuth} isAdmin={isAdmin} handleLogout={handleLogout} />
       
       <main>
         <Routes>
@@ -85,6 +90,10 @@ function App() {
           <Route path="/login" element={<Login setIsAuth={setIsAuth} />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/admin" element={isAdmin ? <AdminPanel /> : <Navigate to="/" replace />} />
+          <Route path="/admin/productos" element={isAdmin ? <AdminProducts /> : <Navigate to="/" replace />} />
+          <Route path="/admin/productos/nuevo" element={isAdmin ? <ProductForm /> : <Navigate to="/" replace />} />
+          <Route path="/admin/productos/editar/:id" element={isAdmin ? <ProductForm /> : <Navigate to="/" replace />} />
         </Routes>
       </main>
 

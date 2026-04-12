@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 
 // NUEVO: Recibimos las props isAuth y handleLogout
-const Navbar = ({ isAuth, handleLogout }) => {
+const Navbar = ({ isAuth, isAdmin, handleLogout }) => {
   const linkBase = "text-xl font-bold tracking-widest transition-all duration-300 px-10 py-5 rounded-2xl flex items-center justify-center outline-none";
   const activeClass = "text-emerald-400 bg-neutral-800/50 border-2 border-emerald-500/50 shadow-[0_0_20px_rgba(16,185,129,0.1)]";
   const inactiveClass = "text-gray-400 hover:text-emerald-400 hover:bg-neutral-800/30 border-2 border-transparent";
@@ -31,7 +31,15 @@ const Navbar = ({ isAuth, handleLogout }) => {
           BLOG
         </NavLink>
 
-        {/* NUEVO: Lógica Condicional para el Login/Logout */}
+        {isAdmin && (
+          <NavLink
+            to="/admin"
+            className={({ isActive }) => `${linkBase} ${isActive ? activeClass : inactiveClass}`}
+          >
+            ADMIN
+          </NavLink>
+        )}
+
         {isAuth ? (
           <button
             onClick={handleLogout}
