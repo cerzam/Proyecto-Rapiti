@@ -49,7 +49,7 @@ export default function AdminProducts() {
             </tr>
           </thead>
           <tbody>
-            {productos.map((p, i) => (
+            {productos.map((p) => (
               <tr
                 key={p.id}
                 className="border-b border-neutral-800 last:border-0 hover:bg-neutral-800/40 transition-colors"
