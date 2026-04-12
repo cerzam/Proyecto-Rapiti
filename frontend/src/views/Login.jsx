@@ -1,7 +1,10 @@
 import { useState, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/useAuth';
 
-export default function Login({ setIsAuth }) {
+export default function Login() {
+  const { login } = useAuth();
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [status, setStatus] = useState('idle'); // idle | loading | success | error
@@ -77,15 +80,9 @@ export default function Login({ setIsAuth }) {
         return;
       }
 
-      // Guardamos la sesión real
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('rol', data.user.rol);
+      login(data.token, data.user.rol);
       setStatus('success');
-      
-      // pruebas
-      setIsAuth(true);
-      
-      alert(`¡Login exitoso! Bienvenido, ${data.user.rol}.`);
+      navigate(data.user.rol === 'admin' ? '/admin' : '/');
     } catch {
       setStatus('error');
       setErrors({ ...newErrors, global: 'Ocurrió un error de red. Intenta más tarde.' });
