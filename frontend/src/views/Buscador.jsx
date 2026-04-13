@@ -26,8 +26,10 @@ const Buscador = () => {
       setError(null);
       setResultados([]);
 
+      const token = localStorage.getItem('token');
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/productos`
+        `${import.meta.env.VITE_API_URL}/productos`,
+        { headers: { Authorization: `Bearer ${token}` } }
       );
 
       if (!response.ok) {
