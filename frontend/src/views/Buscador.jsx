@@ -26,8 +26,6 @@ const Buscador = () => {
       setError(null);
       setResultados([]);
 
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/productos`
       );
@@ -40,7 +38,7 @@ const Buscador = () => {
       const productos = result.data || result;
 
       const filtrados = productos.filter((producto) =>
-        producto.title
+        producto.name
           .toLowerCase()
           .includes(busqueda.toLowerCase())
       );
@@ -63,7 +61,7 @@ const Buscador = () => {
     } else if (e.key === "Enter") {
       if (indexSeleccionado >= 0) {
         const seleccion = resultados[indexSeleccionado];
-        setBusqueda(seleccion.title);
+        setBusqueda(seleccion.name);
         setIndexSeleccionado(-1);
         return;
       }
@@ -144,16 +142,18 @@ const Buscador = () => {
                   }`}
                 style={{ animationDelay: `${index * 0.07}s` }}
               >
-                <img
-                  src={producto.image}
-                  alt={producto.title}
-                  className="h-32 mx-auto object-contain mb-4"
-                />
+                {producto.image_url && (
+                  <img
+                    src={producto.image_url}
+                    alt={producto.name}
+                    className="h-32 mx-auto object-contain mb-4"
+                  />
+                )}
                 <h3 className="text-xl font-semibold text-white">
-                  {producto.title}
+                  {producto.name}
                 </h3>
                 <p className="text-emerald-400 mt-2">
-                  ${producto.price}
+                  ${parseFloat(producto.price).toFixed(2)}
                 </p>
               </div>
             ))}
