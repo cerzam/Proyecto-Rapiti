@@ -1,23 +1,39 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
-
-const postsMock = {
-  1: { titulo: 'Mejores precios en Oxxo esta semana', contenido: 'Encontré que el Oxxo del centro tiene la leche Lala al precio más bajo de la zona, 27.50 pesos el litro...' },
-  2: { titulo: 'Ofertas de temporada en Chedraui', contenido: 'Esta semana Chedraui tiene descuentos en frutas y verduras. El kilogramo de jitomate a 18 pesos...' },
-  3: { titulo: 'Comparativa: Walmart vs Bodega Aurrera', contenido: 'Hice un recorrido por ambas tiendas comparando los precios de la canasta básica. Los resultados...' },
-};
 
 export default function EditPost() {
   const { id } = useParams();
-  const post = postsMock[id];
   const navigate = useNavigate();
 
-  const [titulo, setTitulo] = useState(post?.titulo || '');
-  const [contenido, setContenido] = useState(post?.contenido || '');
+  const [titulo, setTitulo] = useState('');
+  const [contenido, setContenido] = useState('');
   const [errors, setErrors] = useState({ titulo: '', contenido: '' });
   const [status, setStatus] = useState('idle');
+  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
 
-  if (!post) {
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/blog/${id}`);
+        if (!res.ok) { setNotFound(true); return; }
+        const data = await res.json();
+        setTitulo(data.data.title);
+        setContenido(data.data.content);
+      } catch {
+        setNotFound(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPost();
+  }, [id]);
+
+  if (loading) {
+    return <div className="min-h-[calc(100vh-112px)] flex items-center justify-center text-gray-400">Cargando...</div>;
+  }
+
+  if (notFound) {
     return (
       <div className="min-h-[calc(100vh-112px)] flex flex-col items-center justify-center text-center px-6">
         <p className="text-gray-400 text-lg mb-4">Publicación no encontrada.</p>
@@ -26,32 +42,36 @@ export default function EditPost() {
     );
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const newErrors = { titulo: '', contenido: '' };
     let isValid = true;
 
-    if (!titulo.trim()) {
-      newErrors.titulo = 'El título es obligatorio.';
-      isValid = false;
-    }
-    if (!contenido.trim()) {
-      newErrors.contenido = 'El contenido es obligatorio.';
-      isValid = false;
-    }
+    if (!titulo.trim()) { newErrors.titulo = 'El título es obligatorio.'; isValid = false; }
+    if (!contenido.trim()) { newErrors.contenido = 'El contenido es obligatorio.'; isValid = false; }
 
-    if (!isValid) {
-      setErrors(newErrors);
-      return;
-    }
+    if (!isValid) { setErrors(newErrors); return; }
 
     setStatus('loading');
 
-    // Simulamos guardado (mock)
-    setTimeout(() => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/blog/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ title: titulo, content: contenido }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
       setStatus('success');
       setTimeout(() => navigate('/blog'), 1000);
-    }, 800);
+    } catch (err) {
+      setStatus('error');
+      setErrors({ ...newErrors, contenido: err.message || 'Error al guardar.' });
+    }
   };
 
   return (
@@ -71,12 +91,8 @@ export default function EditPost() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6" noValidate>
-
-          {/* TÍTULO */}
           <div>
-            <label htmlFor="titulo" className="block text-sm font-medium text-gray-400 mb-2">
-              Título
-            </label>
+            <label htmlFor="titulo" className="block text-sm font-medium text-gray-400 mb-2">Título</label>
             <input
               id="titulo"
               type="text"
@@ -86,19 +102,13 @@ export default function EditPost() {
               aria-invalid={!!errors.titulo}
               aria-describedby={errors.titulo ? 'titulo-error' : undefined}
               className={`w-full bg-neutral-900 border-2 text-white px-4 py-3 rounded-2xl outline-none transition-all placeholder:text-gray-600
-                focus:ring-4 focus:ring-emerald-500
-                ${errors.titulo ? 'border-red-500' : 'border-neutral-700'}`}
+                focus:ring-4 focus:ring-emerald-500 ${errors.titulo ? 'border-red-500' : 'border-neutral-700'}`}
             />
-            {errors.titulo && (
-              <p id="titulo-error" className="mt-2 text-sm text-red-400" aria-live="polite">{errors.titulo}</p>
-            )}
+            {errors.titulo && <p id="titulo-error" className="mt-2 text-sm text-red-400" aria-live="polite">{errors.titulo}</p>}
           </div>
 
-          {/* CONTENIDO */}
           <div>
-            <label htmlFor="contenido" className="block text-sm font-medium text-gray-400 mb-2">
-              Contenido
-            </label>
+            <label htmlFor="contenido" className="block text-sm font-medium text-gray-400 mb-2">Contenido</label>
             <textarea
               id="contenido"
               value={contenido}
@@ -108,12 +118,9 @@ export default function EditPost() {
               aria-describedby={errors.contenido ? 'contenido-error' : undefined}
               rows={6}
               className={`w-full bg-neutral-900 border-2 text-white px-4 py-3 rounded-2xl outline-none transition-all placeholder:text-gray-600 resize-none
-                focus:ring-4 focus:ring-emerald-500
-                ${errors.contenido ? 'border-red-500' : 'border-neutral-700'}`}
+                focus:ring-4 focus:ring-emerald-500 ${errors.contenido ? 'border-red-500' : 'border-neutral-700'}`}
             />
-            {errors.contenido && (
-              <p id="contenido-error" className="mt-2 text-sm text-red-400" aria-live="polite">{errors.contenido}</p>
-            )}
+            {errors.contenido && <p id="contenido-error" className="mt-2 text-sm text-red-400" aria-live="polite">{errors.contenido}</p>}
           </div>
 
           <div className="flex gap-4">
@@ -124,21 +131,13 @@ export default function EditPost() {
               className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-3 rounded-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center focus:ring-4 focus:ring-emerald-500 outline-none"
             >
               {status === 'loading' ? (
-                <>
-                  <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent mr-3"></div>
-                  Guardando...
-                </>
+                <><div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent mr-3"></div>Guardando...</>
               ) : 'Guardar cambios'}
             </button>
-
-            <Link
-              to="/blog"
-              className="px-6 py-3 border-2 border-neutral-700 text-gray-400 hover:border-neutral-500 hover:text-white rounded-2xl transition-all text-center focus:outline-none focus-visible:ring-4 focus-visible:ring-emerald-500"
-            >
+            <Link to="/blog" className="px-6 py-3 border-2 border-neutral-700 text-gray-400 hover:border-neutral-500 hover:text-white rounded-2xl transition-all text-center focus:outline-none focus-visible:ring-4 focus-visible:ring-emerald-500">
               Cancelar
             </Link>
           </div>
-
         </form>
       </div>
     </div>

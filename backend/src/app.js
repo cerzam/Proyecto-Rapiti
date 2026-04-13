@@ -8,9 +8,10 @@ const { delayMiddleware } = require('./middlewares/delay.middleware');
 const { errorHandler } = require('./middlewares/errorHandler.middleware');
 
 // Rutas
-const authRoutes = require('./routes/auth.routes');     
-const productosRoutes = require('./routes/productos.routes'); 
-const testRoutes = require('./routes/test.routes'); 
+const authRoutes = require('./routes/auth.routes');
+const productosRoutes = require('./routes/productos.routes');
+const blogRoutes = require('./routes/blog.routes');
+const testRoutes = require('./routes/test.routes');
 
 const app = express();
 
@@ -20,9 +21,10 @@ app.use(cors());
 app.use(delayMiddleware);
 
 // Rutas
-app.use('/api/auth', authRoutes);        // Login / registro
+app.use('/api/auth', authRoutes);
 app.use('/api/productos', productosRoutes);
-app.use('/api/test', testRoutes);        // GET /api/test/admin-test y /test-error
+app.use('/api/blog', blogRoutes);
+app.use('/api/test', testRoutes);
 
 // Ruta base
 app.get('/', (req, res) => {
