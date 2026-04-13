@@ -29,11 +29,24 @@ export default function CreatePost() {
 
     setStatus('loading');
 
-    // Por ahora simulamos el guardado (mock)
-    setTimeout(() => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/blog`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ title: titulo, content: contenido }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
       setStatus('success');
       setTimeout(() => navigate('/blog'), 1200);
-    }, 800);
+    } catch (err) {
+      setStatus('error');
+      setErrors({ ...newErrors, contenido: err.message || 'Error al publicar.' });
+    }
   };
 
   return (
