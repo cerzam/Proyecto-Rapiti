@@ -1,66 +1,56 @@
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
+const pool = require('../config/database');
 const { sessions, cleanExpiredSessions } = require('../config/sessions');
 const { recoveryTokens, cleanExpiredRecoveryTokens, EXPIRATION_MS } = require('../config/recovery-tokens');
 
 const MAX_SESSIONS_PER_USER = 5;
 
-// Usuario de prueba (MVP)
-const user = {
-  id: 1,
-  email: "tienda@rapiti.com",
-  // Hash de la contraseña "12345678"
-  password: "$2b$10$ihh59xeHkK5VXgdmBSL3Xe1Bnp1UB6E65JuDHBUSKiSmcl5jCdOzK",
-  rol: "tienda"
-};
-
 const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    // Validar email
-    if (email !== user.email) {
-      return res.status(401).json({ message: "Credenciales inválidas" });
-    }
-
-    // Validar contraseña usando bcrypt
-    const passwordValida = await bcrypt.compare(password, user.password);
-    if (!passwordValida) {
-      return res.status(401).json({ message: "Credenciales inválidas" });
-    }
-
-    // Generar token JWT
-    const token = jwt.sign(
-      { id: user.id, rol: user.rol },
-      process.env.JWT_SECRET || "secret_key_mvp",
-      { expiresIn: "8h" }
+    // Buscar usuario en MySQL
+    const [rows] = await pool.query(
+      'SELECT id, email, password_hash, role FROM users WHERE email = ?',
+      [email]
     );
 
-    // Limpiar expiradas antes de contar
+    if (rows.length === 0) {
+      return res.status(401).json({ message: 'Credenciales inválidas' });
+    }
+
+    const user = rows[0];
+
+    const passwordValida = await bcrypt.compare(password, user.password_hash);
+    if (!passwordValida) {
+      return res.status(401).json({ message: 'Credenciales inválidas' });
+    }
+
+    const token = jwt.sign(
+      { id: user.id, rol: user.role },
+      process.env.JWT_SECRET || 'secret_key_mvp',
+      { expiresIn: '8h' }
+    );
+
     cleanExpiredSessions();
 
-    // Si el usuario ya tiene el máximo de sesiones, eliminar la más antigua
     const userSessions = sessions.filter(s => s.userId === user.id);
     if (userSessions.length >= MAX_SESSIONS_PER_USER) {
       const oldest = userSessions[0];
-      const idx = sessions.indexOf(oldest);
-      sessions.splice(idx, 1);
+      sessions.splice(sessions.indexOf(oldest), 1);
     }
 
-    // GUARDAR SESIÓN (MULTISESIÓN)
     sessions.push({
       userId: user.id,
       token,
-      expiresAt: Date.now() + 8 * 60 * 60 * 1000 // 8h en ms
+      expiresAt: Date.now() + 8 * 60 * 60 * 1000
     });
 
     res.json({
       token,
-      user: {
-        id: user.id,
-        rol: user.rol
-      }
+      user: { id: user.id, rol: user.role }
     });
 
   } catch (error) {
@@ -72,21 +62,24 @@ const login = async (req, res, next) => {
 const forgotPassword = async (req, res, next) => {
   try {
     const { email } = req.body;
+    const mensaje = 'Si ese correo está registrado, recibirás las instrucciones.';
 
-    // Mensaje siempre igual — no revela si el email existe
-    const mensaje = "Si ese correo está registrado, recibirás las instrucciones.";
+    const [rows] = await pool.query(
+      'SELECT id FROM users WHERE email = ?',
+      [email]
+    );
 
-    if (email !== user.email) {
+    if (rows.length === 0) {
       return res.status(200).json({ message: mensaje });
     }
 
+    const user = rows[0];
+
     cleanExpiredRecoveryTokens();
 
-    // Eliminar tokens previos del mismo usuario
     const idx = recoveryTokens.findIndex(t => t.userId === user.id);
     if (idx !== -1) recoveryTokens.splice(idx, 1);
 
-    // Generar token criptográficamente seguro
     const token = crypto.randomBytes(32).toString('hex');
 
     recoveryTokens.push({
@@ -95,11 +88,9 @@ const forgotPassword = async (req, res, next) => {
       expiresAt: Date.now() + EXPIRATION_MS
     });
 
-    // En producción real se enviaría por email.
-    // En desarrollo devolvemos el token para poder demostrar el flujo.
     return res.status(200).json({
       message: mensaje,
-      _devToken: token // solo en desarrollo
+      _devToken: token
     });
 
   } catch (error) {
@@ -115,19 +106,20 @@ const resetPassword = async (req, res, next) => {
     cleanExpiredRecoveryTokens();
 
     const entry = recoveryTokens.find(t => t.token === token);
-
     if (!entry) {
-      return res.status(400).json({ message: "El enlace no es válido o ya expiró." });
+      return res.status(400).json({ message: 'El enlace no es válido o ya expiró.' });
     }
 
-    // Hashear la nueva contraseña y actualizar el usuario en memoria
-    user.password = await bcrypt.hash(password, 10);
+    const newHash = await bcrypt.hash(password, 10);
 
-    // Invalidar el token — uso único
-    const idx = recoveryTokens.indexOf(entry);
-    recoveryTokens.splice(idx, 1);
+    await pool.query(
+      'UPDATE users SET password_hash = ? WHERE id = ?',
+      [newHash, entry.userId]
+    );
 
-    return res.status(200).json({ message: "Contraseña actualizada correctamente." });
+    recoveryTokens.splice(recoveryTokens.indexOf(entry), 1);
+
+    return res.status(200).json({ message: 'Contraseña actualizada correctamente.' });
 
   } catch (error) {
     next(error);
