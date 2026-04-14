@@ -60,12 +60,12 @@ export default function TiendaDetalle() {
 
         <div className="lg:col-span-2 space-y-6">
           <div className="bg-neutral-900 border-2 border-neutral-800 rounded-2xl p-8 animate-scale-in">
-            <div className="flex items-start justify-between mb-4">
+            <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
               <div>
-                <h1 className="text-3xl font-bold text-white mb-1">{tienda.nombre}</h1>
+                <h1 className="text-2xl sm:text-3xl font-bold text-white mb-1">{tienda.nombre}</h1>
                 <span className="text-emerald-400 text-sm font-medium">{tienda.categoria}</span>
               </div>
-              <span className={`text-sm font-semibold px-4 py-2 rounded-full ${tienda.abierto ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40' : 'bg-neutral-700 text-gray-500 border border-neutral-600'}`}>
+              <span className={`shrink-0 text-sm font-semibold px-4 py-2 rounded-full ${tienda.abierto ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40' : 'bg-neutral-700 text-gray-500 border border-neutral-600'}`}>
                 {tienda.abierto ? '✓ Abierto ahora' : 'Cerrado'}
               </span>
             </div>
