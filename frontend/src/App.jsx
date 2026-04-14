@@ -21,7 +21,7 @@ import AdminTiendas from './views/AdminTiendas';
 import TiendaForm from './views/TiendaForm';
 
 function AppRoutes() {
-  const { isAuth, isAdmin, setShowExpiredModal, showExpiredModal } = useAuth();
+  const { isAuth, isAdmin, rol, setShowExpiredModal, showExpiredModal } = useAuth();
 
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
@@ -41,9 +41,9 @@ function AppRoutes() {
           <Route path="/admin/productos" element={isAdmin ? <AdminProducts /> : <Navigate to="/" replace />} />
           <Route path="/admin/productos/nuevo" element={isAdmin ? <ProductForm /> : <Navigate to="/" replace />} />
           <Route path="/admin/productos/editar/:id" element={isAdmin ? <ProductForm /> : <Navigate to="/" replace />} />
-          <Route path="/admin/tiendas" element={isAdmin ? <AdminTiendas /> : <Navigate to="/" replace />} />
-          <Route path="/admin/tiendas/nueva" element={isAdmin ? <TiendaForm /> : <Navigate to="/" replace />} />
-          <Route path="/admin/tiendas/editar/:id" element={isAdmin ? <TiendaForm /> : <Navigate to="/" replace />} />
+          <Route path="/admin/tiendas" element={rol === 'admin' ? <AdminTiendas /> : <Navigate to="/" replace />} />
+          <Route path="/admin/tiendas/nueva" element={rol === 'admin' ? <TiendaForm /> : <Navigate to="/" replace />} />
+          <Route path="/admin/tiendas/editar/:id" element={rol === 'admin' ? <TiendaForm /> : <Navigate to="/" replace />} />
           <Route path="/tiendas" element={<Tiendas />} />
           <Route path="/tiendas/:id" element={<TiendaDetalle />} />
           <Route path="/para-tiendas" element={<ParaTiendas />} />
