@@ -24,6 +24,10 @@ const Navbar = () => {
           BLOG
         </NavLink>
 
+        <NavLink to="/tiendas" className={({ isActive }) => `${linkBase} ${isActive ? activeClass : inactiveClass}`}>
+          TIENDAS
+        </NavLink>
+
         {isAdmin && (
           <NavLink to="/admin" className={({ isActive }) => `${linkBase} ${isActive ? activeClass : inactiveClass}`}>
             ADMIN

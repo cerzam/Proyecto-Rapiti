@@ -14,6 +14,11 @@ import AdminPanel from './views/AdminPanel';
 import AdminProducts from './views/AdminProducts';
 import ProductForm from './views/ProductForm';
 import NotFound from './views/NotFound';
+import Tiendas from './views/Tiendas';
+import TiendaDetalle from './views/TiendaDetalle';
+import ParaTiendas from './views/ParaTiendas';
+import AdminTiendas from './views/AdminTiendas';
+import TiendaForm from './views/TiendaForm';
 
 function AppRoutes() {
   const { isAuth, isAdmin, setShowExpiredModal, showExpiredModal } = useAuth();
@@ -36,6 +41,12 @@ function AppRoutes() {
           <Route path="/admin/productos" element={isAdmin ? <AdminProducts /> : <Navigate to="/" replace />} />
           <Route path="/admin/productos/nuevo" element={isAdmin ? <ProductForm /> : <Navigate to="/" replace />} />
           <Route path="/admin/productos/editar/:id" element={isAdmin ? <ProductForm /> : <Navigate to="/" replace />} />
+          <Route path="/admin/tiendas" element={isAdmin ? <AdminTiendas /> : <Navigate to="/" replace />} />
+          <Route path="/admin/tiendas/nueva" element={isAdmin ? <TiendaForm /> : <Navigate to="/" replace />} />
+          <Route path="/admin/tiendas/editar/:id" element={isAdmin ? <TiendaForm /> : <Navigate to="/" replace />} />
+          <Route path="/tiendas" element={<Tiendas />} />
+          <Route path="/tiendas/:id" element={<TiendaDetalle />} />
+          <Route path="/para-tiendas" element={<ParaTiendas />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
