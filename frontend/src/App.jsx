@@ -13,6 +13,7 @@ import EditPost from './views/EditPost';
 import AdminPanel from './views/AdminPanel';
 import AdminProducts from './views/AdminProducts';
 import ProductForm from './views/ProductForm';
+import NotFound from './views/NotFound';
 
 function AppRoutes() {
   const { isAuth, isAdmin, setShowExpiredModal, showExpiredModal } = useAuth();
@@ -35,6 +36,7 @@ function AppRoutes() {
           <Route path="/admin/productos" element={isAdmin ? <AdminProducts /> : <Navigate to="/" replace />} />
           <Route path="/admin/productos/nuevo" element={isAdmin ? <ProductForm /> : <Navigate to="/" replace />} />
           <Route path="/admin/productos/editar/:id" element={isAdmin ? <ProductForm /> : <Navigate to="/" replace />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
 
