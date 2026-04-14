@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/useAuth';
 
 export default function AdminPanel() {
+  const { rol } = useAuth();
+
   return (
     <div className="min-h-[calc(100vh-112px)] px-6 py-12 max-w-4xl mx-auto">
 
@@ -33,15 +36,17 @@ export default function AdminPanel() {
           <p className="text-gray-400 text-sm">Ver y gestionar publicaciones del blog comunitario.</p>
         </Link>
 
-        <Link
-          to="/admin/tiendas"
-          className="bg-neutral-900 border-2 border-neutral-800 hover:border-emerald-500/50 rounded-2xl p-8 transition-all hover:-translate-y-1 focus:outline-none focus-visible:ring-4 focus-visible:ring-emerald-500 animate-fade-in-up"
-          style={{ animationDelay: '0.21s' }}
-        >
-          <div className="text-4xl mb-4">🏪</div>
-          <h2 className="text-white text-xl font-bold mb-1">Tiendas</h2>
-          <p className="text-gray-400 text-sm">Agregar, editar y eliminar tiendas del directorio.</p>
-        </Link>
+        {rol === 'admin' && (
+          <Link
+            to="/admin/tiendas"
+            className="bg-neutral-900 border-2 border-neutral-800 hover:border-emerald-500/50 rounded-2xl p-8 transition-all hover:-translate-y-1 focus:outline-none focus-visible:ring-4 focus-visible:ring-emerald-500 animate-fade-in-up"
+            style={{ animationDelay: '0.21s' }}
+          >
+            <div className="text-4xl mb-4">🏪</div>
+            <h2 className="text-white text-xl font-bold mb-1">Tiendas</h2>
+            <p className="text-gray-400 text-sm">Agregar, editar y eliminar tiendas del directorio.</p>
+          </Link>
+        )}
 
       </div>
     </div>
