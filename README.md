@@ -9,6 +9,11 @@ RapiTi es una aplicación web diseñada para permitir a los usuarios comparar pr
 https://rapiti-web.netlify.app
 
 ## Prueba Login
+Usuario Admin General
+- Correo: admin@rapiti.com
+- Contraseña: 12345678
+    
+Usuarios de Tiendas
 - Correo: tienda@rapiti.com
 - Contraseña: 12345678
 
