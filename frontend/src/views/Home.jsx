@@ -32,7 +32,7 @@ const Home = () => {
 
       {/* HERO */}
       <section className="text-center mb-14 animate-fade-in-up">
-        <h1 className="text-5xl font-bold text-white leading-tight mb-4">
+        <h1 className="text-3xl sm:text-5xl font-bold text-white leading-tight mb-4">
           Ahorra en tu <span className="text-emerald-400">canasta básica</span>
         </h1>
         <p className="text-gray-400 text-lg mb-8">
@@ -46,11 +46,11 @@ const Home = () => {
             onChange={(e) => setBusqueda(e.target.value)}
             placeholder="¿Qué necesitas hoy? (ej. Huevo, Leche...)"
             aria-label="Buscar productos"
-            className="flex-1 bg-neutral-900 border-2 border-neutral-700 text-white px-5 py-3 rounded-2xl outline-none focus:ring-4 focus:ring-emerald-500 focus:border-emerald-500 placeholder:text-gray-600 transition-all"
+            className="flex-1 min-w-0 bg-neutral-900 border-2 border-neutral-700 text-white px-5 py-3 rounded-2xl outline-none focus:ring-4 focus:ring-emerald-500 focus:border-emerald-500 placeholder:text-gray-600 transition-all"
           />
           <button
             type="submit"
-            className="bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-6 py-3 rounded-2xl transition-all focus:ring-4 focus:ring-emerald-500 outline-none"
+            className="shrink-0 bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-6 py-3 rounded-2xl transition-all focus:ring-4 focus:ring-emerald-500 outline-none"
           >
             BUSCAR
           </button>

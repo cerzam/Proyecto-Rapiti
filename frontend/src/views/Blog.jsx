@@ -43,8 +43,8 @@ export default function Blog() {
     <div className="min-h-[calc(100vh-112px)] px-6 py-12 max-w-3xl mx-auto">
 
       {/* ENCABEZADO */}
-      <div className="flex items-center justify-between mb-10 animate-fade-in-up">
-        <h1 className="text-4xl font-bold text-white">
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-10 animate-fade-in-up">
+        <h1 className="text-3xl sm:text-4xl font-bold text-white">
           <span className="text-emerald-400">Blog</span> comunitario
         </h1>
 
