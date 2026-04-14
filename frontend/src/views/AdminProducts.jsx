@@ -41,18 +41,18 @@ export default function AdminProducts() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-112px)] px-6 py-12 max-w-5xl mx-auto">
+    <div className="min-h-[calc(100vh-112px)] px-4 sm:px-6 py-8 sm:py-12 max-w-5xl mx-auto">
 
-      <div className="flex items-center justify-between mb-10 animate-fade-in-up">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 sm:mb-10 animate-fade-in-up">
         <div>
-          <h1 className="text-4xl font-bold text-white mb-1">
+          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-1">
             Gestión de <span className="text-emerald-400">Productos</span>
           </h1>
           <p className="text-gray-400 text-sm">{productos.length} productos en el catálogo</p>
         </div>
         <Link
           to="/admin/productos/nuevo"
-          className="bg-emerald-500 hover:bg-emerald-600 text-white font-semibold px-5 py-3 rounded-2xl transition-all focus:outline-none focus-visible:ring-4 focus-visible:ring-emerald-500"
+          className="self-start sm:self-auto bg-emerald-500 hover:bg-emerald-600 text-white font-semibold px-5 py-3 rounded-2xl transition-all focus:outline-none focus-visible:ring-4 focus-visible:ring-emerald-500"
         >
           + Nuevo producto
         </Link>
@@ -68,7 +68,38 @@ export default function AdminProducts() {
 
       {!loading && !error && (
         <div className="bg-neutral-900 border-2 border-neutral-800 rounded-2xl overflow-hidden animate-fade-in-up" style={{ animationDelay: '0.07s' }}>
-          <table className="w-full text-sm">
+
+          {/* Mobile: cards */}
+          <div className="block sm:hidden divide-y divide-neutral-800">
+            {productos.map((p) => (
+              <div key={p.id} className="p-4 flex items-center gap-3">
+                {p.image_url && (
+                  <img src={p.image_url} alt={p.name} className="w-11 h-11 object-contain rounded-xl bg-neutral-800 shrink-0" />
+                )}
+                <div className="flex-1 min-w-0">
+                  <p className="text-white font-medium text-sm leading-snug">{p.name}</p>
+                  <p className="text-emerald-400 font-semibold text-sm mt-0.5">${parseFloat(p.price).toFixed(2)}</p>
+                </div>
+                <div className="flex flex-col gap-2 shrink-0">
+                  <Link
+                    to={`/admin/productos/editar/${p.id}`}
+                    className="text-gray-400 hover:text-white border border-neutral-700 hover:border-neutral-500 px-3 py-1.5 rounded-xl text-xs text-center transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+                  >
+                    Editar
+                  </Link>
+                  <button
+                    onClick={() => handleEliminar(p.id)}
+                    className="text-red-400 hover:text-white hover:bg-red-500 border border-red-500/40 hover:border-red-500 px-3 py-1.5 rounded-xl text-xs transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+                  >
+                    Eliminar
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop: tabla */}
+          <table className="hidden sm:table w-full text-sm">
             <thead>
               <tr className="border-b border-neutral-800 text-gray-400 text-left">
                 <th className="px-6 py-4 font-medium">Producto</th>
