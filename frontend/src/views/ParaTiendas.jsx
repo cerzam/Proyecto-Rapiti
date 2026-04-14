@@ -80,15 +80,15 @@ export default function ParaTiendas() {
               <div className="bg-neutral-900 border-2 border-neutral-800 rounded-2xl p-6 space-y-4">
                 <h3 className="text-white font-bold mb-2">Información de la Tienda</h3>
                 <div>
-                  <label className="text-gray-400 text-sm block mb-1">Nombre de la Tienda *</label>
-                  <input name="nombreTienda" value={form.nombreTienda} onChange={handleChange}
+                  <label htmlFor="nombreTienda" className="text-gray-400 text-sm block mb-1">Nombre de la Tienda *</label>
+                  <input id="nombreTienda" name="nombreTienda" value={form.nombreTienda} onChange={handleChange}
                     placeholder="Ingresa el nombre de tu tienda"
                     className={`w-full bg-neutral-800 border-2 text-white px-3 py-2 rounded-xl outline-none text-sm focus:ring-2 focus:ring-emerald-500 ${errors.nombreTienda ? 'border-red-500' : 'border-neutral-700'}`} />
                   {errors.nombreTienda && <p className="text-red-400 text-xs mt-1">{errors.nombreTienda}</p>}
                 </div>
                 <div>
-                  <label className="text-gray-400 text-sm block mb-1">Categoría de la Tienda *</label>
-                  <select name="categoria" value={form.categoria} onChange={handleChange}
+                  <label htmlFor="categoria" className="text-gray-400 text-sm block mb-1">Categoría de la Tienda *</label>
+                  <select id="categoria" name="categoria" value={form.categoria} onChange={handleChange}
                     className={`w-full bg-neutral-800 border-2 text-white px-3 py-2 rounded-xl outline-none text-sm focus:ring-2 focus:ring-emerald-500 ${errors.categoria ? 'border-red-500' : 'border-neutral-700'}`}>
                     <option value="">Selecciona una categoría</option>
                     <option>Abarrotes</option>
@@ -101,8 +101,8 @@ export default function ParaTiendas() {
                   {errors.categoria && <p className="text-red-400 text-xs mt-1">{errors.categoria}</p>}
                 </div>
                 <div>
-                  <label className="text-gray-400 text-sm block mb-1">Descripción de la Tienda</label>
-                  <textarea name="descripcion" value={form.descripcion} onChange={handleChange}
+                  <label htmlFor="descripcion" className="text-gray-400 text-sm block mb-1">Descripción de la Tienda</label>
+                  <textarea id="descripcion" name="descripcion" value={form.descripcion} onChange={handleChange}
                     placeholder="Describe tu tienda y lo que vendes (mínimo 20 caracteres)"
                     rows={3}
                     className="w-full bg-neutral-800 border-2 border-neutral-700 text-white px-3 py-2 rounded-xl outline-none text-sm focus:ring-2 focus:ring-emerald-500 resize-none" />
@@ -113,22 +113,22 @@ export default function ParaTiendas() {
               <div className="bg-neutral-900 border-2 border-neutral-800 rounded-2xl p-6 space-y-4">
                 <h3 className="text-white font-bold mb-2">Información del Propietario</h3>
                 <div>
-                  <label className="text-gray-400 text-sm block mb-1">Nombre Completo *</label>
-                  <input name="nombrePropietario" value={form.nombrePropietario} onChange={handleChange}
+                  <label htmlFor="nombrePropietario" className="text-gray-400 text-sm block mb-1">Nombre Completo *</label>
+                  <input id="nombrePropietario" name="nombrePropietario" value={form.nombrePropietario} onChange={handleChange}
                     placeholder="Ingresa tu nombre completo"
                     className={`w-full bg-neutral-800 border-2 text-white px-3 py-2 rounded-xl outline-none text-sm focus:ring-2 focus:ring-emerald-500 ${errors.nombrePropietario ? 'border-red-500' : 'border-neutral-700'}`} />
                   {errors.nombrePropietario && <p className="text-red-400 text-xs mt-1">{errors.nombrePropietario}</p>}
                 </div>
                 <div>
-                  <label className="text-gray-400 text-sm block mb-1">Dirección de Correo Electrónico *</label>
-                  <input name="email" type="email" value={form.email} onChange={handleChange}
+                  <label htmlFor="email" className="text-gray-400 text-sm block mb-1">Dirección de Correo Electrónico *</label>
+                  <input id="email" name="email" type="email" value={form.email} onChange={handleChange}
                     placeholder="tu@correo.com"
                     className={`w-full bg-neutral-800 border-2 text-white px-3 py-2 rounded-xl outline-none text-sm focus:ring-2 focus:ring-emerald-500 ${errors.email ? 'border-red-500' : 'border-neutral-700'}`} />
                   {errors.email && <p className="text-red-400 text-xs mt-1">{errors.email}</p>}
                 </div>
                 <div>
-                  <label className="text-gray-400 text-sm block mb-1">Número de Teléfono</label>
-                  <input name="telefono" value={form.telefono} onChange={handleChange}
+                  <label htmlFor="telefono" className="text-gray-400 text-sm block mb-1">Número de Teléfono</label>
+                  <input id="telefono" name="telefono" value={form.telefono} onChange={handleChange}
                     placeholder="+1 (555) 123-4567"
                     className="w-full bg-neutral-800 border-2 border-neutral-700 text-white px-3 py-2 rounded-xl outline-none text-sm focus:ring-2 focus:ring-emerald-500" />
                 </div>
@@ -138,20 +138,20 @@ export default function ParaTiendas() {
               <div className="bg-neutral-900 border-2 border-neutral-800 rounded-2xl p-6 space-y-4">
                 <h3 className="text-white font-bold mb-2">Ubicación de la Tienda</h3>
                 <div>
-                  <label className="text-gray-400 text-sm block mb-1">Calle y Número</label>
-                  <input name="calle" onChange={handleChange}
+                  <label htmlFor="calle" className="text-gray-400 text-sm block mb-1">Calle y Número</label>
+                  <input id="calle" name="calle" onChange={handleChange}
                     placeholder="Ej. 123 Calle Principal"
                     className="w-full bg-neutral-800 border-2 border-neutral-700 text-white px-3 py-2 rounded-xl outline-none text-sm focus:ring-2 focus:ring-emerald-500" />
                 </div>
                 <div>
-                  <label className="text-gray-400 text-sm block mb-1">Ciudad</label>
-                  <input name="ciudad" value={form.ciudad} onChange={handleChange}
+                  <label htmlFor="ciudad" className="text-gray-400 text-sm block mb-1">Ciudad</label>
+                  <input id="ciudad" name="ciudad" value={form.ciudad} onChange={handleChange}
                     placeholder="Tehuacán"
                     className="w-full bg-neutral-800 border-2 border-neutral-700 text-white px-3 py-2 rounded-xl outline-none text-sm focus:ring-2 focus:ring-emerald-500" />
                 </div>
                 <div>
-                  <label className="text-gray-400 text-sm block mb-1">Código Postal</label>
-                  <input name="codigoPostal" value={form.codigoPostal} onChange={handleChange}
+                  <label htmlFor="codigoPostal" className="text-gray-400 text-sm block mb-1">Código Postal</label>
+                  <input id="codigoPostal" name="codigoPostal" value={form.codigoPostal} onChange={handleChange}
                     placeholder="75700"
                     className="w-full bg-neutral-800 border-2 border-neutral-700 text-white px-3 py-2 rounded-xl outline-none text-sm focus:ring-2 focus:ring-emerald-500" />
                 </div>

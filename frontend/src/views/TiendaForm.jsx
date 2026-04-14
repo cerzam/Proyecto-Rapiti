@@ -142,7 +142,7 @@ export default function TiendaForm() {
           {/* Productos de la tienda */}
           <div>
             <div className="flex items-center justify-between mb-4">
-              <label className="block text-sm font-medium text-gray-400">Productos de la tienda</label>
+              <span className="block text-sm font-medium text-gray-400">Productos de la tienda</span>
               <button
                 type="button"
                 onClick={agregarProducto}
