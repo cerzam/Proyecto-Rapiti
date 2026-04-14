@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useState } from 'react';
 
 const categorias = [
@@ -9,9 +9,10 @@ const categorias = [
 ];
 
 const tiendas = [
-  { nombre: 'Abarrotes Don José', distancia: '0.3 km' },
-  { nombre: 'Oxxo Centro', distancia: '0.5 km' },
-  { nombre: 'Walmart Angelópolis', distancia: '1.2 km' },
+  { id: 1, nombre: 'Abarrotes Don José', categoria: 'Abarrotes', abierto: true },
+  { id: 2, nombre: 'Farmacia San Rafael', categoria: 'Farmacia', abierto: true },
+  { id: 4, nombre: 'Mini Super La Esquina', categoria: 'Abarrotes', abierto: true },
+  { id: 6, nombre: 'Verduras y Frutas Lupita', categoria: 'Verdulería', abierto: true },
 ];
 
 const Home = () => {
@@ -77,32 +78,31 @@ const Home = () => {
 
       {/* TIENDAS CERCANAS */}
       <section aria-labelledby="tiendas-titulo">
-        <h2 id="tiendas-titulo" className="text-xl font-bold text-white mb-6">
-          Tiendas cerca de ti
-        </h2>
-        <div className="bg-neutral-900 border-2 border-neutral-800 rounded-2xl p-6">
-          {/* Mapa placeholder */}
-          <div className="w-full h-48 bg-neutral-800 rounded-xl mb-6 flex items-center justify-center relative overflow-hidden">
-            <span className="text-gray-600 text-sm">Mapa próximamente</span>
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
-              <button className="bg-neutral-900 border border-emerald-500 text-emerald-400 text-sm px-4 py-2 rounded-full hover:bg-emerald-500 hover:text-white transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500">
-                🗺️ EXPLORAR MAPA
-              </button>
-            </div>
-          </div>
-
-          {/* Lista de tiendas */}
-          <ul className="space-y-3">
-            {tiendas.map((tienda) => (
-              <li
-                key={tienda.nombre}
-                className="flex items-center justify-between text-sm text-gray-400 border-b border-neutral-800 pb-3 last:border-0 last:pb-0"
-              >
-                <span className="text-white font-medium">{tienda.nombre}</span>
-                <span className="text-emerald-400">{tienda.distancia}</span>
-              </li>
-            ))}
-          </ul>
+        <div className="flex items-center justify-between mb-6">
+          <h2 id="tiendas-titulo" className="text-xl font-bold text-white">
+            Tiendas cerca de ti
+          </h2>
+          <Link to="/tiendas" className="text-emerald-400 hover:underline text-sm">
+            Ver todas →
+          </Link>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {tiendas.map((tienda, i) => (
+            <Link
+              key={tienda.id}
+              to={`/tiendas/${tienda.id}`}
+              className="bg-neutral-900 border-2 border-neutral-800 rounded-2xl p-5 flex items-center justify-between hover:border-emerald-500/50 hover:-translate-y-1 transition-all duration-300 focus:outline-none focus-visible:ring-4 focus-visible:ring-emerald-500 animate-fade-in-up"
+              style={{ animationDelay: `${i * 0.07}s` }}
+            >
+              <div>
+                <p className="text-white font-semibold">{tienda.nombre}</p>
+                <p className="text-emerald-400 text-xs mt-1">{tienda.categoria}</p>
+              </div>
+              <span className={`text-xs font-semibold px-3 py-1 rounded-full ${tienda.abierto ? 'bg-emerald-500/20 text-emerald-400' : 'bg-neutral-700 text-gray-500'}`}>
+                {tienda.abierto ? 'Abierto' : 'Cerrado'}
+              </span>
+            </Link>
+          ))}
         </div>
       </section>
 
