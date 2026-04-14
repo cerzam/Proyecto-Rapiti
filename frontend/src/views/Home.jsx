@@ -1,5 +1,5 @@
 import { useNavigate, Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const categorias = [
   { nombre: 'Frutas', emoji: '🍎' },
@@ -8,16 +8,17 @@ const categorias = [
   { nombre: 'Limpieza', emoji: '🧴' },
 ];
 
-const tiendas = [
-  { id: 1, nombre: 'Abarrotes Don José', categoria: 'Abarrotes', abierto: true },
-  { id: 2, nombre: 'Farmacia San Rafael', categoria: 'Farmacia', abierto: true },
-  { id: 4, nombre: 'Mini Super La Esquina', categoria: 'Abarrotes', abierto: true },
-  { id: 6, nombre: 'Verduras y Frutas Lupita', categoria: 'Verdulería', abierto: true },
-];
-
 const Home = () => {
   const [busqueda, setBusqueda] = useState('');
+  const [tiendas, setTiendas] = useState([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL}/tiendas`)
+      .then(r => r.json())
+      .then(data => setTiendas((data.data || []).filter(t => t.abierto).slice(0, 4)))
+      .catch(() => {});
+  }, []);
 
   const handleBuscar = (e) => {
     e.preventDefault();

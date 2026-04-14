@@ -1,67 +1,5 @@
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-
-const TIENDAS_MOCK = [
-  {
-    id: 1,
-    nombre: 'Abarrotes Don José',
-    categoria: 'Abarrotes',
-    direccion: 'Calle 5 de Mayo #123, Centro, Tehuacán, Puebla',
-    horario: 'Lunes - Sábado: 8:00 AM - 8:00 PM\nDomingo: 9:00 AM - 2:00 PM',
-    abierto: true,
-    rating: 4.5,
-    productos: [
-      { id: 1, nombre: 'Leche Lala 1L', precio: 28.50 },
-      { id: 2, nombre: 'Pan Bimbo Grande', precio: 45.00 },
-      { id: 3, nombre: 'Arroz Verde Valle 1kg', precio: 29.50 },
-      { id: 4, nombre: 'Frijoles La Costeña 560g', precio: 22.00 },
-      { id: 5, nombre: 'Aceite 123 1L', precio: 38.00 },
-      { id: 6, nombre: 'Huevo San Juan 12pz', precio: 52.90 },
-    ],
-    lat: 18.4653,
-    lng: -97.3925,
-  },
-  {
-    id: 2,
-    nombre: 'Farmacia San Rafael',
-    categoria: 'Farmacia',
-    direccion: 'Av. Independencia #456, Tehuacán, Puebla',
-    horario: 'Lunes - Domingo: 7:00 AM - 10:00 PM',
-    abierto: true,
-    rating: 4.2,
-    productos: [
-      { id: 1, nombre: 'Paracetamol 500mg', precio: 25.00 },
-      { id: 2, nombre: 'Ibuprofeno 400mg', precio: 30.00 },
-    ],
-    lat: 18.4660,
-    lng: -97.3930,
-  },
-  {
-    id: 3, nombre: 'Papelería El Estudiante', categoria: 'Papelería',
-    direccion: 'Blvd. Las Torres #78, Tehuacán, Puebla',
-    horario: 'Lunes - Viernes: 9:00 AM - 6:00 PM', abierto: false, rating: 3.8,
-    productos: [], lat: 18.4640, lng: -97.3910,
-  },
-  {
-    id: 4, nombre: 'Mini Super La Esquina', categoria: 'Abarrotes',
-    direccion: 'Calle Morelos #34, Tehuacán, Puebla',
-    horario: 'Lunes - Domingo: 6:00 AM - 11:00 PM', abierto: true, rating: 4.0,
-    productos: [{ id: 1, nombre: 'Coca Cola 600ml', precio: 18.00 }],
-    lat: 18.4670, lng: -97.3940,
-  },
-  {
-    id: 5, nombre: 'Ferretería El Tornillo', categoria: 'Ferretería',
-    direccion: 'Av. Reforma #210, Tehuacán, Puebla',
-    horario: 'Lunes - Sábado: 8:00 AM - 6:00 PM', abierto: false, rating: 4.1,
-    productos: [], lat: 18.4650, lng: -97.3950,
-  },
-  {
-    id: 6, nombre: 'Verduras y Frutas Lupita', categoria: 'Verdulería',
-    direccion: 'Mercado Municipal Local 12, Tehuacán, Puebla',
-    horario: 'Lunes - Domingo: 6:00 AM - 3:00 PM', abierto: true, rating: 4.7,
-    productos: [{ id: 1, nombre: 'Jitomate por kg', precio: 18.00 }, { id: 2, nombre: 'Aguacate pz', precio: 12.00 }],
-    lat: 18.4655, lng: -97.3920,
-  },
-];
 
 function Estrellas({ rating }) {
   return (
@@ -69,16 +7,38 @@ function Estrellas({ rating }) {
       {[1, 2, 3, 4, 5].map(n => (
         <span key={n} className={n <= Math.round(rating) ? 'text-emerald-400' : 'text-neutral-600'}>★</span>
       ))}
-      <span className="text-gray-400 text-sm ml-1">({rating})</span>
     </div>
   );
 }
 
 export default function TiendaDetalle() {
   const { id } = useParams();
-  const tienda = TIENDAS_MOCK.find(t => t.id === parseInt(id));
+  const [tienda, setTienda] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
 
-  if (!tienda) {
+  useEffect(() => {
+    const fetchTienda = async () => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/tiendas/${id}`);
+        if (res.status === 404) { setNotFound(true); return; }
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message);
+        setTienda(data.data);
+      } catch {
+        setNotFound(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTienda();
+  }, [id]);
+
+  if (loading) {
+    return <div className="min-h-[calc(100vh-112px)] flex items-center justify-center text-gray-400">Cargando...</div>;
+  }
+
+  if (notFound) {
     return (
       <div className="min-h-[calc(100vh-112px)] flex flex-col items-center justify-center text-center px-6">
         <p className="text-gray-400 text-lg mb-4">Tienda no encontrada.</p>
@@ -98,7 +58,6 @@ export default function TiendaDetalle() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-        {/* Info principal */}
         <div className="lg:col-span-2 space-y-6">
           <div className="bg-neutral-900 border-2 border-neutral-800 rounded-2xl p-8 animate-scale-in">
             <div className="flex items-start justify-between mb-4">
@@ -111,7 +70,7 @@ export default function TiendaDetalle() {
               </span>
             </div>
 
-            <Estrellas rating={tienda.rating} />
+            <Estrellas rating={4.5} />
 
             <div className="mt-6 space-y-4">
               <div>
@@ -120,15 +79,12 @@ export default function TiendaDetalle() {
               </div>
               <div>
                 <p className="text-emerald-400 font-semibold text-sm mb-1">🕐 Horarios:</p>
-                {tienda.horario.split('\n').map((h, i) => (
-                  <p key={i} className="text-gray-300">{h}</p>
-                ))}
+                <p className="text-gray-300">{tienda.horario}</p>
               </div>
             </div>
           </div>
 
-          {/* Productos */}
-          {tienda.productos.length > 0 && (
+          {tienda.productos && tienda.productos.length > 0 && (
             <div className="bg-neutral-900 border-2 border-neutral-800 rounded-2xl p-8 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
               <h2 className="text-xl font-bold text-white mb-6">Productos registrados</h2>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -147,18 +103,21 @@ export default function TiendaDetalle() {
           )}
         </div>
 
-        {/* Mapa */}
         <div className="space-y-4 animate-fade-in-up" style={{ animationDelay: '0.07s' }}>
           <div className="bg-neutral-900 border-2 border-neutral-800 rounded-2xl overflow-hidden">
             <div className="p-4 border-b border-neutral-800">
               <h2 className="text-white font-bold">Ubicación</h2>
             </div>
-            <iframe
-              title={`Mapa de ${tienda.nombre}`}
-              src={mapUrl}
-              className="w-full h-64"
-              loading="lazy"
-            />
+            {tienda.lat && tienda.lng ? (
+              <iframe
+                title={`Mapa de ${tienda.nombre}`}
+                src={mapUrl}
+                className="w-full h-64"
+                loading="lazy"
+              />
+            ) : (
+              <div className="h-64 flex items-center justify-center text-gray-600 text-sm">Sin ubicación registrada</div>
+            )}
             <div className="p-4">
               <a
                 href={`https://www.openstreetmap.org/?mlat=${tienda.lat}&mlon=${tienda.lng}#map=16/${tienda.lat}/${tienda.lng}`}
