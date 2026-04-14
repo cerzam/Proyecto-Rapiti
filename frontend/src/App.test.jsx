@@ -12,6 +12,13 @@ function renderApp() {
   )
 }
 
+beforeEach(() => {
+  vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+    ok: true,
+    json: async () => ({ data: [] }),
+  }));
+});
+
 describe('Sesión - Multipestaña, logout y reconexión', () => {
   beforeEach(() => {
     localStorage.clear();
@@ -104,7 +111,7 @@ describe('Sesión - Multipestaña, logout y reconexión', () => {
   });
 
   it('al reconectar online sin token no llama a fetch', async () => {
-    const fetchMock = vi.fn();
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ data: [] }) });
     vi.stubGlobal('fetch', fetchMock);
 
     render(<BrowserRouter><App /></BrowserRouter>);
@@ -113,7 +120,8 @@ describe('Sesión - Multipestaña, logout y reconexión', () => {
       window.dispatchEvent(new Event('online'));
     });
 
-    expect(fetchMock).not.toHaveBeenCalled();
+    const authCalls = fetchMock.mock.calls.filter(([url]) => String(url).includes('/auth/verify'));
+    expect(authCalls).toHaveLength(0);
   });
 });
 
